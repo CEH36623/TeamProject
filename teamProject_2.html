@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <link rel="stylesheet" href="style_2.css" />
+    <link rel="stylesheet" href=" https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap " >
+  </head>
+
+  
+  <body>
+    <div class="header">
+      <div style="font-size: 3em;">Welcome To Real Space-X Project.</div>
+      <div><button class="button">Register</button> </div>
+      <div><button class="button">Login</button></div>
+      <div><button class="button">Mypage</button></div>
+    </div>
+
+    <div class="nav">
+      <div style="font-size: 1.6em; margin-bottom: 10px">
+        후원자 목록
+      </div>
+      <div><img src="donaldTrump.jfif" width="150px" /></div>
+      <div>도널드 트럼프</div>
+      <div><img src="son.jpg" width="150px" /></div>
+      <div>손흥민</div>
+      <div><img src="ronaldo.jpg" width="150px" /></div>
+      <div>크리스티아누 호날두</div>
+      <div><img src="woren.jpeg" width="150px" /></div>
+      <div>워렌 버핏</div>
+      <div><img src="elonMusk.png" width="150px" /></div>
+      <div>일론 머스크</div>
+    </div>
+
+    <div class="section">
+      <div style="font-size: 2em;">화성의 거주 환경 구축 현황</div>
+      <br>
+      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure repellendus, eveniet dolor adipisci nostrum dolorum molestiae est, cumque aut quidem beatae, perspiciatis doloribus! Illum rem sunt iure voluptates nemo obcaecati!</div>
+      <br>
+      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate nemo sequi placeat sed nisi earum odio hic quasi ullam, voluptates assumenda? Illo, quos sequi. Molestiae rerum dolore tempora placeat repellat.</div>
+      <br><br>
+      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore consectetur architecto reiciendis porro accusantium, repellat, ea consequatur quos atque debitis aut, facere laboriosam est ad. Fugiat dignissimos perspiciatis exercitationem mollitia!</div>
+    </div>
+
+    <div class="aside">
+      <canvas id="canvas" width="400" height="400"></canvas>
+
+    <!-- Three.js를 npm으로 설치 없이 실행 가능하게 만들어주는 코드 -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.141.0/build/three.module.js",
+          "GLTFLoader": "https://unpkg.com/three@0.141.0/examples/jsm/loaders/GLTFLoader.js",
+          "OrbitControls": "https://unpkg.com/three@0.141.0/examples/jsm/controls/OrbitControls.js"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import { GLTFLoader } from "GLTFLoader";
+      import * as THREE from "three";
+      import { OrbitControls } from "OrbitControls";
+
+      let scene = new THREE.Scene();
+      let renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector("#canvas"),
+        antialias: true,
+      });
+      renderer.outputEncoding = THREE.sRGBEncoding;
+
+      let camera = new THREE.PerspectiveCamera(30, 1);
+      camera.position.set(0, 0, 4);
+
+      let controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+
+      scene.background = new THREE.Color("#091218");
+      let light = new THREE.DirectionalLight(0xffff00, 3);
+      scene.add(light);
+      let ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
+      light.position.set(1, 1, 1);
+
+      let loader = new GLTFLoader();
+      loader.load("mars/scene.gltf", function (gltf) {
+        scene.add(gltf.scene);
+
+        function animate() {
+          requestAnimationFrame(animate);
+          gltf.scene.rotation.x += 0.001;
+          gltf.scene.rotation.y += 0.001;
+          controls.update();
+          renderer.render(scene, camera);
+        }
+        animate();
+      });
+    </script>
+    </div>
+
+    <div class="footer">
+      <p style="font-size: 0.8em">
+      보험약관 같은 스타일로 쭉 한 번‘G’, ‘A.P’“Let me kill ’em like I usually do, Man.”Check it How do you do?‘Tiki-Taka’ 난무불이나 축이듯, 땀이 주르르르륵빛 쬐, Beautiful (That’s cool)
+      살짝쿵 손만 잡고 짝짝꿍 볼 맞장구게슴츠르레, G’azm 오르게Dang, Is she that good?!Baby Girl! Too bad for meThere you go! Toot that! As for me?All I want!
+      Is in arms’ reachBreak me off! PassionatelyBaby Girl! Too bad for meThere you go! Toot that! As for me?All I want! Is in arms’ reachBreak me off! Passionately
+      긴가민가 어딘가 아리까리해Flirting인가? Bluffing인가? U got me badMBTI가 SEXY TYPE 하니 내 색시나 해GD be like that N.G M이 나이 Zett“I don’t think so.”Baby Girl! 
+      Too bad for meThere you go! Toot that! As for me?All I want! Is in arms’ reachBreak me off! PassionatelyBaby Girl! Too bad for meThere you go! Toot 
+      that! As for me?All I want! Is in arms’ reachBreak me off! PassionatelyYou do somethin’ (to me)The chills runnin’ (thru me)I feel somethin’ (pull me)
+      I’m still runnin’ (til’ I reach)You do somethin’ (to me)The chills runnin’ (thru me)I feel somethin’ (pull me)I’m still runnin’ (til’ I reach)Come 
+      do something to meCome do something to meCome do something to meToo hot to touch, Show meCome do something to meCome do something 
+      to meCome do something to me1, 2, You Too. Shall we?You do somethin’The chills runnin’I feel somethin’I’m still runnin’ (til’ I reach)You do somethin’The chills runnin’I feel somethin’I’m still runnin’
+    </p>
+  </body>
+</html>

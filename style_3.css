@@ -1,0 +1,46 @@
+* {
+  color: white;
+  font-family: Georigia, Serif;
+  /*FontGeorgia*/
+}
+html {
+  height: auto;
+}
+body {
+  background-color: rgb(9, 18, 24);
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+  margin: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 5px;
+  height: 100%;
+}
+.header {
+  height: 15%;
+  width: 100%;
+  display: block;
+}
+.nav {
+  width: auto;
+  height: 70%;
+  float: left;
+  overflow-y: scroll;
+}
+.section {
+  margin-left: 30px;
+  width: 60%;
+  height: 70%;
+  float: left;
+}
+.aside {
+  width: 10%;
+  height: 70%;
+  float: left;
+}
+.footer {
+  width: 100%;
+  height: 10%;
+  clear: both;
+}

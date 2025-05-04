@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mars Triangular Plot</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+<!--
+  importmap의 역할 : import 주소 간단하게 표현
+
+  import * as THREE from 'three';
+  import * as THREE from 'https://unpkg.com/three@0.141.0/build/three.module.js';
+  이 두개는 실질적으로 같음. 
+
+  "three" : 'https://unpkg.com/three@0.141.0/build/three.module.js';
+  이렇게 해서 간단하게 보이려고
+  -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.141.0/build/three.module.js",
+        "GLTFLoader": "https://unpkg.com/three@0.141.0/examples/jsm/loaders/GLTFLoader.js",
+        "OrbitControls": "https://unpkg.com/three@0.141.0/examples/jsm/controls/OrbitControls.js"
+      }
+    }
+  </script>
+
+  <script type="module">
+// GLTFLoader로 Mars 모델 로드 및 부지 생성 호출
+import * as THREE from 'three';
+import { GLTFLoader } from 'GLTFLoader';
+import { OrbitControls } from 'OrbitControls';
+
+// 4개 기본요소 초기화
+// camera, renderer, controls, secne
+//const : 주소 고정, 속송 가변
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 0, 2);
+
+const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector("#canvas"), antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+const scene = new THREE.Scene();
+
+
+// 조명 설정
+//AmbientLight(색상rgb, 세기)
+//AmbientLight(흰색, 0.7)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.7); // 부드러운 전역 조명
+scene.add(ambientLight);
+
+// (시각화를 위한) 조명을 카메라 쪽에서 비추도록 하여 전체가 잘 보이게 함
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2.0);
+directionalLight.position.set(0, 0, 2); // 카메라 방향
+scene.add(directionalLight);
+const plotMeshes = [];
+
+
+//mars 모델 불러오기
+const loader = new GLTFLoader();
+loader.load('mars/scene.gltf', function (gltf) { /*화성 파일 불러와서 텍스쳐 입힘.*/
+    const mars = gltf.scene;
+    mars.position.set(0, 0, 0);
+    // 화성 모델 크기를 부지 반지름과 일치시킴
+    mars.scale.set(1, 1, 1);
+    //렌더링할때 화면에 나타나게 객체 추가
+    scene.add(mars);
+
+    createPlots(mars);  // 모델 로드 후 부지 삼각형 생성
+});
+
+function createPlots(mars) {
+    const radius = 1.0;
+    const geometry = new THREE.IcosahedronGeometry(radius, 3); // Geodesic sphere with higher detail
+    geometry.setIndex([...Array(geometry.getAttribute('position').count).keys()]);
+    /* 빨간원으로 시각화부분 
+    const material = new THREE.MeshStandardMaterial({
+        color: 0xff0000,
+        side: THREE.DoubleSide,
+        transparent: false,
+        opacity: 1.0
+    });
+    */
+
+    const positionAttribute = geometry.getAttribute('position');
+    const indexAttribute = geometry.index;
+
+    //정점 좌표 추출
+    for (let i = 0; i < indexAttribute.count; i += 3) {
+        //삼각형이니까 정점 3개 추출
+        const indices = [
+            indexAttribute.getX(i),
+            indexAttribute.getX(i + 1),
+            indexAttribute.getX(i + 2)
+        ];
+        //vector로 변환함
+        //multiplyScalar로 구 반지름보다 더 크게 함 (더 두드러지게).
+        const v0 = new THREE.Vector3().fromBufferAttribute(positionAttribute, indices[0]).normalize().multiplyScalar(radius * 1.02);
+        const v1 = new THREE.Vector3().fromBufferAttribute(positionAttribute, indices[1]).normalize().multiplyScalar(radius * 1.02);
+        const v2 = new THREE.Vector3().fromBufferAttribute(positionAttribute, indices[2]).normalize().multiplyScalar(radius * 1.02);
+
+        const vertices = new Float32Array([
+            v0.x, v0.y, v0.z,
+            v1.x, v1.y, v1.z,
+            v2.x, v2.y, v2.z
+        ]);
+
+        const faceGeometry = new THREE.BufferGeometry();
+        faceGeometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        faceGeometry.setIndex([0, 1, 2]);
+        faceGeometry.computeVertexNormals();
+
+        // 안보이게 함.
+        const faceMesh = new THREE.Mesh(faceGeometry, new THREE.MeshBasicMaterial({ visible: false }));
+        faceMesh.name = `Plot_Triangle_${i / 3}`;
+        plotMeshes.push(faceMesh);
+        // 클릭 가능한 삼각형 표시
+        faceMesh.userData = { clickable: true }; // click하면 true로 상태가 바뀜.
+        mars.add(faceMesh);
+
+        // 클릭 감지하는 투명한 삼각형
+        const edgeGeometry = new THREE.BufferGeometry().setFromPoints([
+          v0, v1, v2, v0 // 삼각형을 따라 이어지는 선
+        ]);
+        //삼각형 경계엣 선 보이게 함.
+        const edgeLine = new THREE.Line(edgeGeometry, new THREE.LineBasicMaterial({ color: 0xffffff }));
+        mars.add(edgeLine);
+    }
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+// 삼각형 클릭 시 goto.html로 이동
+window.addEventListener('click', (event) => {
+  const mouse = new THREE.Vector2(
+    (event.clientX / window.innerWidth) * 2 - 1,
+    -(event.clientY / window.innerHeight) * 2 + 1
+  );
+
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObjects(plotMeshes);
+  if (intersects.length > 0) {
+    const obj = intersects[0].object;
+    if (obj.userData.clickable) { // clickable: true 
+      window.location.href = "goto.html"; // 이동
+    }
+  }
+});
+  </script>
+</body>
+</html>
