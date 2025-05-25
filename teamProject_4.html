@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
   <meta charset="UTF-8">
   <title>Mars Triangular Plot</title>
   <style>
@@ -9,6 +11,19 @@
   </style>
 </head>
 <body>
+  <div class="position-absolute top-0 end-0 p-3" style="z-index: 10; width: 280px;">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-gradient bg-primary text-white fw-bold">
+        🪐 부지 정보
+      </div>
+      <div class="card-body">
+        <img src="" id="plot-img" class="img-fluid rounded mb-2" style="display: none;" alt="부지 이미지">
+        <h6 class="text-muted" id="plot-info">부지를 선택하세요.</h6>
+        <p class="card-text" id="plot-description">선택한 부지에 대한 간단한 설명을 여기에 쓸 수 있어요.</p>
+        <button id="details-button" class="btn btn-outline-light btn-sm bg-primary text-white" style="display: none;">자세히 보기</button>
+      </div>
+    </div>
+  </div>
   <canvas id="canvas"></canvas>
 <!--
   importmap의 역할 : import 주소 간단하게 표현
@@ -40,13 +55,29 @@ import { OrbitControls } from 'OrbitControls';
 // camera, renderer, controls, secne
 //const : 주소 고정, 속송 가변
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 0, 2);
+// 기본 위치
+camera.position.set(0, 0, 3);
+
+// 세션에 저장된 카메라 상태가 있다면 복원
+const savedPosition = sessionStorage.getItem('cameraPosition');
+const savedRotation = sessionStorage.getItem('cameraRotation');
+if (savedPosition && savedRotation) {
+  const pos = JSON.parse(savedPosition);
+  const rot = JSON.parse(savedRotation);
+  camera.position.set(pos.x, pos.y, pos.z);
+  camera.rotation.set(rot._x, rot._y, rot._z);
+}
 
 const renderer = new THREE.WebGLRenderer({ canvas: document.querySelector("#canvas"), antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+controls.enableRotate = true; // 기본적으로 회전 가능
+controls.dampingFactor = 0.05; // 기본값은 0.1, 작게 설정하면 덜 미끄러짐
+controls.rotateSpeed = 0.5; // 회전 속도도 조절
+controls.zoomSpeed = 0.5;   // 줌 속도 조절
+controls.panSpeed = 0.5;    // 팬 속도 조절
 
 const scene = new THREE.Scene();
 
@@ -107,6 +138,15 @@ function createPlots(mars) {
         const v1 = new THREE.Vector3().fromBufferAttribute(positionAttribute, indices[1]).normalize().multiplyScalar(radius * 1.02);
         const v2 = new THREE.Vector3().fromBufferAttribute(positionAttribute, indices[2]).normalize().multiplyScalar(radius * 1.02);
 
+        // 삼각형 정점 정보를 저장
+        if (!window.plotVertices) window.plotVertices = [];
+        window.plotVertices.push({
+          id: `Plot_${i / 3}`,
+          v0: { x: v0.x, y: v0.y, z: v0.z },
+          v1: { x: v1.x, y: v1.y, z: v1.z },
+          v2: { x: v2.x, y: v2.y, z: v2.z }
+        });
+
         const vertices = new Float32Array([
             v0.x, v0.y, v0.z,
             v1.x, v1.y, v1.z,
@@ -123,13 +163,16 @@ function createPlots(mars) {
         faceMesh.name = `Plot_Triangle_${i / 3}`;
         plotMeshes.push(faceMesh);
         // 클릭 가능한 삼각형 표시
-        faceMesh.userData = { clickable: true }; // click하면 true로 상태가 바뀜.
+
+        //삼각형마다 고유 id 부여
+        faceMesh.userData = { clickable: true, id: `Plot_${i / 3}` };  
         mars.add(faceMesh);
 
         // 클릭 감지하는 투명한 삼각형
         const edgeGeometry = new THREE.BufferGeometry().setFromPoints([
           v0, v1, v2, v0 // 삼각형을 따라 이어지는 선
         ]);
+
         //삼각형 경계엣 선 보이게 함.
         const edgeLine = new THREE.Line(edgeGeometry, new THREE.LineBasicMaterial({ color: 0xffffff }));
         mars.add(edgeLine);
@@ -142,6 +185,15 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+
+// Make canvas responsive to window size changes
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+
 // 삼각형 클릭 시 goto.html로 이동
 window.addEventListener('click', (event) => {
   const mouse = new THREE.Vector2(
@@ -155,11 +207,40 @@ window.addEventListener('click', (event) => {
   const intersects = raycaster.intersectObjects(plotMeshes);
   if (intersects.length > 0) {
     const obj = intersects[0].object;
-    if (obj.userData.clickable) { // clickable: true 
-      window.location.href = "goto.html"; // 이동
+    if (obj.userData.clickable) {
+      const id = obj.userData.id || 'unknown';
+      const plotNumber = parseInt(id.replace('Plot_', ''));
+      const x = 3;
+      const targetFile = `product_${plotNumber % x}.html`;
+
+      document.getElementById('plot-info').textContent = `${id} 부지를 선택하셨습니다.`;
+      // Add description and image update
+      const descriptions = {};
+      for (let i = 0; i < 80; i++) {
+        descriptions[i] = `이 부지는 화성의 다양한 지역 중 하나로, Plot_${i}에 해당합니다. 탐사 및 개발 가능성이 높은 후보지로 평가되고 있습니다.`;
+      }
+      const description = descriptions[plotNumber] || "이 부지에 대한 설명은 준비 중입니다.";
+      document.getElementById('plot-description').textContent = description;
+
+      const img = document.getElementById('plot-img');
+      // Log which image is being loaded
+      console.log("✅ Plot 이미지 경로:", `mars/mars_triangle_plots_highres/Plot_${plotNumber}.png`);
+      img.src = `mars/mars_triangle_plots_highres/Plot_${plotNumber}.png`;
+      img.alt = `Plot ${plotNumber} 부지 이미지`;
+      img.title = `Plot ${plotNumber}`;
+      img.style.display = 'block';
+      const detailsBtn = document.getElementById('details-button');
+      detailsBtn.style.display = 'block';
+      detailsBtn.onclick = () => {
+        sessionStorage.setItem('cameraPosition', JSON.stringify(camera.position));
+        sessionStorage.setItem('cameraRotation', JSON.stringify(camera.rotation));
+        window.location.href = targetFile;
+      };
     }
   }
 });
+
   </script>
 </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </html>
