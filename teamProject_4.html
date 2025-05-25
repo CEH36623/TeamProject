@@ -209,23 +209,25 @@ window.addEventListener('click', (event) => {
     const obj = intersects[0].object;
     if (obj.userData.clickable) {
       const id = obj.userData.id || 'unknown';
-      const plotNumber = parseInt(id.replace('Plot_', ''));
+      const plotNumber = parseInt(id.replace('구역_', ''));
       const x = 3;
       const targetFile = `product_${plotNumber % x}.html`;
 
-      document.getElementById('plot-info').textContent = `${id} 부지를 선택하셨습니다.`;
+      document.getElementById('plot-info').textContent = `${id} 구역를 선택하셨습니다.`;
       // Add description and image update
       const descriptions = {};
       for (let i = 0; i < 80; i++) {
-        descriptions[i] = `이 부지는 화성의 다양한 지역 중 하나로, Plot_${i}에 해당합니다. 탐사 및 개발 가능성이 높은 후보지로 평가되고 있습니다.`;
+        descriptions[i] = `이 부지는 화성의 다양한 지역 중 하나로, 구역_${i}에 해당합니다. 탐사 및 개발 가능성이 높은 후보지로 평가되고 있습니다.`;
       }
-      const description = descriptions[plotNumber] || "이 부지에 대한 설명은 준비 중입니다.";
+      const description = descriptions[plotNumber] || "이 구역에 대한 설명은 준비 중입니다.";
       document.getElementById('plot-description').textContent = description;
 
       const img = document.getElementById('plot-img');
       // Log which image is being loaded
-      console.log("✅ Plot 이미지 경로:", `mars/mars_triangle_plots_highres/Plot_${plotNumber}.png`);
-      img.src = `mars/mars_triangle_plots_highres/Plot_${plotNumber}.png`;
+      
+      //image 넣기
+      const safePlotNumber = plotNumber < 287 ? plotNumber : Math.floor(plotNumber / 3);
+      img.src = `mars_plots_287/plot_${safePlotNumber}.jpg`;
       img.alt = `Plot ${plotNumber} 부지 이미지`;
       img.title = `Plot ${plotNumber}`;
       img.style.display = 'block';
