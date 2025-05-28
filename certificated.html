@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>구매 증서</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f0f2f5;
+            font-family: "Pretendard", "Apple SD Gothic Neo", sans-serif;
+            color: #333;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg,
+                    transparent 30%,
+                    rgb(255, 255, 255) 50%,
+                    transparent 70%);
+            transform: translateX(-100%);
+            animation: shine 1.8s ease-in-out forwards;
+            animation-delay: 0.4s;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            to {
+                transform: translateX(200%);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            80% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #deed {
+            max-width: 80vw;
+            max-height: 60vh;
+            margin: 0 auto 20px;
+            animation: pulse 1s ease-in-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        #delivery {
+            font-size: 1.7rem;
+            font-weight: 700;
+            text-align: center;
+            animation: pulse 1s ease-in-out 0.4s forwards;
+            opacity: 0;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="deed" src="deed.png" alt="구매 증서">
+    <div id="delivery">배송 예정일: --</div>
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        const dday = new Date();
+        dday.setDate(dday.getDate() + 14);
+        const yyyy = dday.getFullYear();
+        const mm = String(dday.getMonth() + 1).padStart(2, '0');
+        const dd = String(dday.getDate()).padStart(2, '0');
+        document.getElementById('delivery').textContent =
+            `배송 예정일: ${yyyy}-${mm}-${dd}`;
+
+        const myConfetti = confetti.create(
+            document.getElementById('confetti-canvas'),
+            { resize: true, useWorker: true }
+        );
+
+        setTimeout(() => {
+            myConfetti({
+                particleCount: 300,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+        }, 400);
+    </script>
+</body>
+
+</html>

@@ -211,15 +211,24 @@ window.addEventListener('click', (event) => {
       const id = obj.userData.id || 'unknown';
       const plotNumber = parseInt(id.replace('구역_', ''));
       const x = 3;
-      const targetFile = `product_${plotNumber % x}.html`;
+      const targetFile = `abc2.html`;
 
       document.getElementById('plot-info').textContent = `${id} 구역를 선택하셨습니다.`;
       // Add description and image update
-      const descriptions = {};
-      for (let i = 0; i < 80; i++) {
-        descriptions[i] = `이 부지는 화성의 다양한 지역 중 하나로, 구역_${i}에 해당합니다. 탐사 및 개발 가능성이 높은 후보지로 평가되고 있습니다.`;
-      }
-      const description = descriptions[plotNumber] || "이 구역에 대한 설명은 준비 중입니다.";
+      const descriptions = {
+        0: "이 구역은 화성의 극지방 인근으로, 낮은 온도와 얼음 존재 가능성이 있습니다. 과학적 탐사 및 미래 자원 활용에 적합합니다.",
+        1: "이 지역은 풍화된 지형이 특징이며, 과거의 물 흐름 흔적이 있습니다. 고대 하천의 흔적이 남아 있어 지질학적 연구 가치가 높습니다.",
+        2: "평탄한 평야 지역으로, 구조물 건설에 유리한 지형을 가집니다. 대규모 기지나 태양광 설비 건설에 적합합니다.",
+        3: "풍부한 철 산화물이 존재하는 지역으로, 붉은색이 강하게 나타납니다. 자원 채굴 및 금속 추출 연구에 유리합니다.",
+        4: "이 구역은 운석 충돌 분지가 가까워 과학적 탐사 가치가 높습니다. 다양한 암석과 광물 표본 채취가 가능합니다.",
+        5: "화산활동의 흔적이 있는 지역으로, 지열 에너지 활용 가능성이 있습니다. 화성 내 열수 활동의 단서를 찾을 수 있습니다.",
+        6: "이 지역은 고도가 낮고 대기 밀도가 높아 드론 운영에 유리합니다. 실험적 비행 및 기상 관측에 적합합니다.",
+        7: "모래 언덕이 분포한 지역으로, 풍력 에너지 연구에 적합합니다. 모래 이동 및 화성의 바람 연구에 활용할 수 있습니다.",
+        8: "하천 흔적이 있는 협곡지대로, 과거 물 존재 가능성이 높은 지역입니다. 생명체 흔적 탐사 및 수자원 연구 대상입니다.",
+        9: "화성 적도 부근의 따뜻한 지역으로, 태양광 발전에 유리한 구역입니다. 장기 거주 및 에너지 개발에 적합합니다."
+      };
+      const groupIndex = plotNumber % 10;
+      const description = descriptions[groupIndex] || "이 구역에 대한 설명은 준비 중입니다.";
       document.getElementById('plot-description').textContent = description;
 
       const img = document.getElementById('plot-img');
@@ -236,7 +245,10 @@ window.addEventListener('click', (event) => {
       detailsBtn.onclick = () => {
         sessionStorage.setItem('cameraPosition', JSON.stringify(camera.position));
         sessionStorage.setItem('cameraRotation', JSON.stringify(camera.rotation));
-        window.location.href = targetFile;
+
+
+      window.location.href = `${targetFile}?plot=${plotNumber}`;
+        
       };
     }
   }

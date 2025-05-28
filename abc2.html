@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>abc</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 10%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .photo {
+      flex: 0 0 35%;
+    }
+
+
+    .content {
+      flex: 0 0 65%;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .info {
+      flex: 0 0 70%;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .purchase {
+      flex: 0 0 30%;
+      padding: 16px;
+    }
+
+    @media screen and (max-width: 767px) {
+      .container {
+        width: 100%;
+        margin: 0;
+      }
+
+      .content {
+        flex-direction: column;
+      }
+
+      .photo {
+        order: 0;
+      }
+
+      .info {
+        order: 1;
+      }
+
+      .reviews {
+        order: 2;
+      }
+    }
+
+    @media screen and (min-width: 768px) and (max-width: 959px) {
+      .content {
+        flex-direction: column;
+      }
+
+      .photo {
+        order: 0;
+      }
+
+      .info {
+        order: 1;
+      }
+
+      .reviews {
+        order: 2;
+      }
+    }
+
+    @media screen and (min-width: 960px) {
+      .content {
+        flex-direction: row;
+      }
+    }
+
+    .photo {
+      flex: 0 0 35%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .photo img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .controls .btn {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn.first {
+      background: #230ec1;
+      color: #fff;
+      pointer-events: none;
+    }
+
+    .btn.second {
+      background: #230ec1;
+      color: #fff;
+    }
+
+    .timestamp {
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .price-summary {
+      text-align: center;
+    }
+
+    .price-summary .price {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .price-summary .coords {
+      font-size: 10px;
+      color: #666;
+    }
+
+    .detail-table {
+      display: flex;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .detail-table .cell {
+      flex: 1;
+      padding: 13px;
+      text-align: center;
+    }
+
+    .detail-table h3 {
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .detail-table p {
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .chart-title h2 {
+      text-align: center;
+      font-size: 20px;
+    }
+    
+    #chart {
+      width: 100%; height: auto;
+    }
+
+    .photo-placeholder {
+      border: 2px dashed #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #999;
+    }
+
+    .attributes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 50px;
+      row-gap: 5px;
+      margin: 16px 0;
+      color: #777;
+      font-size: 12px;
+    }
+
+    .attributes .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .attributes .value {
+      color: #333;
+      font-weight: 600;
+    }
+
+    .purchase {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 16px;
+      background: #fafafa;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .opt {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 12px;
+      text-align: left;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .opt.selected {
+      border-color: #230ec1;
+      box-shadow: 0 0 0 2px rgba(0, 102, 192, 0.2);
+    }
+
+    .opt small {
+      color: #555;
+      font-size: 12px;
+    }
+
+    .price-block {
+      font-size: 32px;
+      font-weight: bold;
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    .price-cents {
+      color: #646464;
+      font-weight: 300;
+      font-size: 15px;
+    }
+
+    .returns a {
+      color: #230ec1;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #buy-now {
+      background: #230ec1;
+      border: none;
+      border-radius: 4px;
+      padding: 12px;
+      color: #ffffff;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .shipping,
+    .seller,
+    .payment {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 320px;
+      position: relative;
+    }
+
+    .modal-content .close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: #230ec1;
+      color: #fff;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <section class="photo">
+       
+    </section>
+
+    <section class="content">
+      <div class="info">
+        <section class="info">
+          <div class="controls">
+            <button class="btn first">&nbsp;매매&nbsp;</button>
+            <span class="timestamp">25.05.11 등록</span>
+            <button class="btn second">&nbsp;뒤로가기&nbsp;</button>
+          </div>
+          <div class="price-summary">
+            <h1 class="price">13억</h1>
+            <p class="coords">41°24′12.2″N 2°10′26.5″E</p>
+          </div>
+          <br>
+          <div class="detail-table">
+            <div class="cell">
+              <h3>총 대지면적</h3>
+              <p>1000평<br/>3,305.79m²</p>
+            </div>
+            <div class="cell">
+              <h3>토지단가</h3>
+              <p>1,300,000원/평<br/>393,249.42원/m²</p>
+            </div>
+            <div class="cell">
+              <h3>건폐율 상한</h3>
+              <p>60%</p>
+            </div>
+          </div><br>
+          <div class="attributes">
+            <div class="item">
+              <span class="label">보유세</span>
+              <span class="value">1,172만원</span>
+            </div>
+            <div class="item">
+              <span class="label">수자원 근접성</span>
+              <span class="value">5km 이내</span>
+            </div>
+            <div class="item">
+              <span class="label">호재</span>
+              <span class="value">학군지, 역세권</span>
+            </div>
+            <div class="item">
+              <span class="label">일조시간</span>
+              <span class="value">12시간 37분</span>
+            </div>
+          </div>
+          <br>
+          <div class="chart-title">
+            <h2>시세 <span class="arrow"></span></h2>
+          </div>
+          <section class="chart-area">
+            <div id="chart"></div>
+          </section>
+
+      </div>
+
+      <aside class="purchase">
+         <div id="plot-label"></div>
+         <img id="plot-img" src="" alt="Mars Plot" title="Mars Plot" />
+        <div class="options">
+          <button class="opt selected" data-price="13억 원" data-price-raw="1300000000">
+            토지 증서<br/><small>₩13억 원</small>
+          </button>
+          <button class="opt" data-price="18억 원" data-price-raw="1800000000">
+            증서 + 화성 이동수단<br/><small>₩18억 원</small>
+          </button>
+          <button class="opt" data-price="41억 원" data-price-raw="4100000000">
+            증서 + 건축물 + 화성 이동수단<br/><small>₩41억 원</small>
+          </button>
+        </div>
+
+        <div class="price-block">
+          <span class="price-label">₩</span>
+          <span id="price-value">13억 원</span>
+          <span class="price-cents">(VAT포함)</span>
+        </div>
+
+        <div class="returns">
+          <a href="#" id="returns-link">전 세계 무료 반품 ▾</a>
+        </div>
+
+        <button id="buy-now">구매</button>
+        <br>
+        <div class="shipping">Ships from M4rs.com</div>
+        <div class="seller">Sold by M4rs.com</div>
+      </aside>
+
+      <div id="returns-modal" class="modal">
+        <div class="modal-content">
+          <button class="close">&times;</button>
+          <h3>교환 정책</h3>
+          <p>해당 상품의 개봉 흔적 혹은 상품의 사용감이 없을시, 한달 내로 무료 환불을 해드립니다.</p>
+          </p>
+        </div>
+      </div>
+      </aside>
+    </section>
+  </div>
+</body>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+  document.querySelectorAll('.opt').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.opt').forEach(x=>x.classList.remove('selected'));
+      btn.classList.add('selected');
+      const price=btn.dataset.price;
+      const[int,cents]=price.split('.');
+      document.getElementById('price-value').textContent=int;
+      document.querySelector('.price-cents').textContent=cents.padEnd(2,'0');
+    });
+  });
+
+  const modal=document.getElementById('returns-modal');
+  document.getElementById('returns-link').addEventListener('click',e=>{
+    e.preventDefault();
+    modal.style.display='flex';
+  });
+  modal.querySelector('.close').addEventListener('click',()=>modal.style.display='none');
+  modal.addEventListener('click',e=>{
+    if(e.target===modal)modal.style.display='none';
+  });
+  document.querySelector('.btn.second').addEventListener('click',()=>history.back());
+
+  const tooltip=d3.select('body').append('div')
+                  .attr('class','tooltip')
+                  .style('opacity',0);
+
+  const parseYM=d3.timeParse('%Y-%m');
+  const data=[
+    {date:parseYM('2021-01'),value:9.0},{date:parseYM('2021-02'),value:10.6},
+    {date:parseYM('2021-03'),value:13.1},{date:parseYM('2021-04'),value:13.3},
+    {date:parseYM('2021-05'),value:13.5},{date:parseYM('2021-06'),value:13.5},
+    {date:parseYM('2021-07'),value:13.7},{date:parseYM('2021-08'),value:17.2},
+    {date:parseYM('2021-09'),value:17.2},{date:parseYM('2021-10'),value:17.1},
+    {date:parseYM('2021-11'),value:16.8},{date:parseYM('2021-12'),value:16.7},
+    {date:parseYM('2022-01'),value:16.8},{date:parseYM('2022-02'),value:16.6},
+    {date:parseYM('2022-03'),value:16.5},{date:parseYM('2022-04'),value:16.7},
+    {date:parseYM('2022-05'),value:9.3},{date:parseYM('2022-06'),value:9.5},
+    {date:parseYM('2022-07'),value:9.6},{date:parseYM('2022-08'),value:9.8},
+    {date:parseYM('2022-09'),value:10.0},{date:parseYM('2022-10'),value:10.2},
+    {date:parseYM('2022-11'),value:10.4},{date:parseYM('2022-12'),value:10.7},
+    {date:parseYM('2023-01'),value:10.8},{date:parseYM('2023-02'),value:10.2},
+    {date:parseYM('2023-03'),value:10.5},{date:parseYM('2023-04'),value:10.6},
+    {date:parseYM('2023-05'),value:10.8},{date:parseYM('2023-06'),value:10.7},
+    {date:parseYM('2023-07'),value:10.8},{date:parseYM('2023-08'),value:10.9},
+    {date:parseYM('2023-09'),value:11.0},{date:parseYM('2023-10'),value:11.3},
+    {date:parseYM('2023-11'),value:11.1},{date:parseYM('2023-12'),value:11.2},
+    {date:parseYM('2024-01'),value:11.4},{date:parseYM('2024-02'),value:10.8},
+    {date:parseYM('2024-03'),value:10.3},{date:parseYM('2024-04'),value:10.7},
+    {date:parseYM('2024-05'),value:11.0},{date:parseYM('2024-06'),value:11.9},
+    {date:parseYM('2024-07'),value:12.0},{date:parseYM('2024-08'),value:12.1},
+    {date:parseYM('2024-09'),value:12.0},{date:parseYM('2024-10'),value:12.3},
+    {date:parseYM('2024-11'),value:12.5},{date:parseYM('2024-12'),value:12.6},
+    {date:parseYM('2025-01'),value:12.9},{date:parseYM('2025-02'),value:12.8},
+    {date:parseYM('2025-03'),value:12.8},{date:parseYM('2025-04'),value:13.0}
+  ];
+
+  function render(){
+    d3.select('#chart svg').remove();
+    const margin={top:20,right:20,bottom:30,left:40};
+    const fullW=document.getElementById('chart').clientWidth;
+    const width=fullW-margin.left-margin.right;
+    const height=300-margin.top-margin.bottom;
+    const visible=data;
+    const x=d3.scaleTime().domain(d3.extent(visible,d=>d.date)).range([0,width]);
+    const y=d3.scaleLinear().domain([0,d3.max(visible,d=>d.value)*1.1]).nice().range([height,0]);
+    const svg=d3.select('#chart').append('svg')
+                .attr('width',width+margin.left+margin.right)
+                .attr('height',height+margin.top+margin.bottom)
+                .append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+    svg.append('g').attr('transform',`translate(0,${height})`)
+       .call(d3.axisBottom(x).ticks(Math.max(width/80,2)).tickFormat(d3.timeFormat('%Y')))
+       .selectAll('text').attr('dy','0.8em');
+    svg.append('g').call(d3.axisLeft(y).ticks(5).tickFormat(d=>d+'억'));
+    svg.append('path').datum(visible)
+       .attr('fill','none').attr('stroke','#6c63ff').attr('stroke-width',2)
+       .attr('d',d3.line().x(d=>x(d.date)).y(d=>y(d.value)).curve(d3.curveMonotoneX));
+    const focus=svg.append('g').style('display','none');
+    focus.append('line').attr('y1',0).attr('y2',height).attr('stroke','#999').attr('stroke-dasharray','3,3');
+    focus.append('circle').attr('r',4).attr('fill','#6c63ff').attr('stroke','#fff').attr('stroke-width',2);
+    svg.append('rect').attr('width',width).attr('height',height)
+       .attr('fill','none').attr('pointer-events','all')
+       .on('mouseover',()=>{focus.style('display',null);tooltip.style('opacity',1);})
+       .on('mouseout',()=>{focus.style('display','none');tooltip.style('opacity',0);})
+       .on('mousemove',function(event){
+         const[mx]=d3.pointer(event,this);
+         const bisect=d3.bisector(d=>d.date).left;
+         const x0=x.invert(mx);
+         const i=bisect(visible,x0,1);
+         const d0=visible[i-1],d1=visible[i]||d0;
+         const d=x0-d0.date>d1.date-x0?d1:d0;
+         const cx=x(d.date),cy=y(d.value);
+         focus.select('line').attr('transform',`translate(${cx},0)`);
+         focus.select('circle').attr('transform',`translate(${cx},${cy})`);
+         tooltip.html(`${d3.timeFormat('%Y.%m')(d.date)} / ${d.value}억`)
+                .style('left',(event.pageX+10)+'px')
+                .style('top',(event.pageY-28)+'px');
+       });
+  }
+
+  document.getElementById('buy-now').addEventListener('click', () => {
+    const selectedBtn = document.querySelector('.opt.selected');
+    const name = selectedBtn.childNodes[0].textContent.trim(); // “토지 증서” 등
+    const price = Number(selectedBtn.dataset.priceRaw);
+    localStorage.setItem('selectedOption', JSON.stringify({ name, price }));
+    window.location.href = 'purchase.html';
+  });
+
+  render();
+  window.addEventListener('resize',()=>render(),{passive:true});
+</script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const plotNumber = parseInt(params.get("plot"));
+  const safePlotNumber = plotNumber < 287 ? plotNumber : Math.floor(plotNumber / 3);
+
+  const img = document.getElementById("plot-img");
+  img.src = `mars_plots_287/plot_${safePlotNumber}.jpg`;
+  img.alt = `Plot ${plotNumber} 부지 이미지`;
+  img.title = `Plot ${plotNumber}`;
+  document.getElementById("plot-label").textContent = `구역_${plotNumber}`;
+</script>
+</html>
