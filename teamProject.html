@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+  <script>
+    window.addEventListener('load', () => {
+      const grid = document.querySelector('.grid');
+      imagesLoaded(grid, () => {
+        new Masonry(grid, {
+          itemSelector: '.grid-item',
+          columnWidth: '.grid-item',
+          percentPosition: true,
+          gutter: 10
+        });
+      });
+    });
+  </script>
+
+</head>
+
+<body>
+  <div class="split-overlay left"></div>
+  <div class="split-overlay right"></div>
+
+  <div class="backgroundVideo">
+    <video class="backgroundVideoContent" autoplay muted loop>
+      <source src="assets/background.mp4" type="video/mp4" />
+    </video>
+    <div class="videoOverlayText">
+      <h1 style="font-size: 80px; text-align: center;">회사명</h1>
+      <h1>Explore to new world</h1>
+    </div>
+  </div>
+
+  <div id="header">
+    <div><img src="assets/logo.png" style="height:70px; margin-bottom: 5px;"></div>
+    <span><a href="#ideology-anchor">이념</a></span>
+    <span><a href="#marsInformation">ABOUT MARS</a></span>
+    <span><a href="teamProject_4.html">스토어</a></span>
+    <span><a href="#news">NEWS</a></span>
+  </div>
+
+  <div id="main">
+    <div id="ideology-anchor"></div>
+
+    <div id="ideology">
+      <h1>회사 이념</h1>
+      <div id="paragraph">
+        <div>(회사 이름)은 Space-X와의 협업을 바탕으로 한 혁신을 고객에게 선보입니다.</div>
+        <div>저희의 목표는 세계 최고 수준의 기술을 통해 우주로 나아가는 것.</div>
+        <div>지구를 넘어, 미래 터전의 새로운 패러다임을 제시합니다.</div>
+        <div>저희 회사의 활동이 인류를 위한 한 걸음이 될 수 있기를 기원합니다.</div>
+      </div>
+    </div>
+
+    <div id="marsInformation">
+      <h1>화성, 생명의 가능성</h1>
+      <div class="carousel">
+        <div class="group">
+          <div class="card"><img src="assets/researcher.jpeg"></div>
+          <div class="card"><img src="assets/marsLiving.jpg"></div>
+          <div class="card"><img src="assets/nasaRobot.jpg"></div>
+          <div class="card"><img src="assets/marsResearcher.png"></div>
+          <div class="card"><img src="assets/rocket.jpg"></div>
+        </div>
+        <div aria-hidden class="group">
+          <div class="card"><img src="assets/researcher.jpeg"></div>
+          <div class="card"><img src="assets/marsLiving.jpg"></div>
+          <div class="card"><img src="assets/nasaRobot.jpg"></div>
+          <div class="card"><img src="assets/marsResearcher.png"></div>
+          <div class="card"><img src="assets/rocket.jpg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="news">
+      <h1>NEWS</h1>
+      <div id="container">
+        <div id="left">
+          <img src="assets/rocketReturn.png" width="400px">
+        </div>
+        <div id="right">
+          <div id="paragraph">
+            <div style="font-size: 1.4em;">세계 최초 로켓 회수 성공</div>
+            <div>세계 최초로 로켓을 완벽하게 회수에 성공하며</div>
+            <div>탐사 비용 절감과 우주 시대의 새로운 장을 열었다.</div>
+            <div>이번 성과는 민간 우주 산업에 큰 전환점이</div>
+            <div>될 것으로 기대되고 있다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div id="left">
+        <img src="assets/donaldElon.jpg" width="400px">
+      </div>
+      <div id="right">
+        <div id="paragraph">
+          <div style="font-size: 1.4em;">일론 머스크와 도람푸 대통령</div>
+          <div>미국 도람푸 대통령은 우주 산업 혁신을 위해</div>
+          <div>SpaceX의 CEO 일론 머스크와 긴밀히 협력하며</div>
+          <div>재사용 로켓 기술과 우주 확장에 큰 힘을 실었다.</div>
+          <div>이들의 파트너십은 미국의 우주 주도권 강화와</div>
+          <div>민간 우주 사업 활성화에 중요한 역할을 하고 있다.</div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div id="left">
+        <img src="assets/mars.jpg" width="400px">
+      </div>
+      <div id="right">
+        <div id="paragraph">
+          <div style="font-size: 1.4em;">화성 스타십 발사 시연 영상</div>
+          <div>(회사명)과의 협업 이후 첫 번째 발사가 성황리에</div>
+          <div>마무리되며 1년 전 협업 발표 당시 세간에 공표된</div>
+          <div>'세계 최고 수준의 기술' 이라는 포부 섞인 말이</div>
+          <div>현실로 다가왔다는 평가가 주를 이루고 있다.</div>
+          <div>더불어 최근 도람푸 대통령의 공식 석상에서의</div>
+          <div>발언으로 세간의 관심이 더더욱 집중되고 있다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="masonry-gallery" class="grid" style="margin-left:7vw">
+    <div class="grid-item"><img src="assets/mansonry_1.jpg" alt=""></div>
+    <div class="grid-item"><img src="assets/mansonry_2.jpg" alt=""></div>
+    <div class="grid-item"><img src="assets/mansonry_3.jpg" alt=""></div>
+    <div class="grid-item"><img src="assets/mansonry_4.jpg" alt=""></div>
+    <div class="grid-item"><img src="assets/mansonry_5.jpg" alt=""></div>
+    <div class="grid-item"><img src="assets/mansonry_6.jpg" alt=""></div>
+    <div class="grid-item"><img src="assets/mansonry_7.jpg" alt=""></div>
+    <div class="grid-item"><img src="assets/mansonry_8.jpg" alt=""></div>
+  </div>
+
+  <script>
+    let opened = false;
+
+    window.addEventListener('scroll', () => {
+      if (!opened) {
+        document.querySelector('.split-overlay.left').classList.add('open');
+        document.querySelector('.split-overlay.right').classList.add('open');
+        opened = true;
+
+        setTimeout(() => {
+          document.querySelector('.split-overlay.left').remove();
+          document.querySelector('.split-overlay.right').remove();
+        }, 1600);
+      }
+    });
+
+    window.addEventListener('load', () => {
+      new Masonry('.grid', {
+        itemSelector: '.grid-item',
+        columnWidth: '.grid-item',
+        percentPosition: true,
+        gutter: 10
+      });
+    });
+  </script>
+
+</body>
+
+</html>

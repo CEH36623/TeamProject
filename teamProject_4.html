@@ -8,6 +8,7 @@
   <style>
     body { margin: 0; overflow: hidden; }
     canvas { display: block; }
+    
   </style>
 </head>
 <body>
@@ -20,7 +21,7 @@
         <img src="" id="plot-img" class="img-fluid rounded mb-2" style="display: none;" alt="부지 이미지">
         <h6 class="text-muted" id="plot-info">부지를 선택하세요.</h6>
         <p class="card-text" id="plot-description">선택한 부지에 대한 간단한 설명을 여기에 쓸 수 있어요.</p>
-        <button id="details-button" class="btn btn-outline-light btn-sm bg-primary text-white" style="display: none;">자세히 보기</button>
+        <button id="details-button" class="btn btn-outline-light btn-sm bg-primary text-white" style="display: none;">구매</button>
       </div>
     </div>
   </div>
@@ -213,7 +214,7 @@ window.addEventListener('click', (event) => {
       const x = 3;
       const targetFile = `abc2.html`;
 
-      document.getElementById('plot-info').textContent = `${id} 구역를 선택하셨습니다.`;
+      document.getElementById('plot-info').textContent = `${id}를 선택하셨습니다.`;
       // Add description and image update
       const descriptions = {
         0: "이 구역은 화성의 극지방 인근으로, 낮은 온도와 얼음 존재 가능성이 있습니다. 과학적 탐사 및 미래 자원 활용에 적합합니다.",
